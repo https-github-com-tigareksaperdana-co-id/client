@@ -4932,7 +4932,7 @@
         },
         {
           "name": "uid",
-          "type": "gregor1.UID"
+          "type": "keybase1.UID"
         },
         {
           "name": "topicType",
