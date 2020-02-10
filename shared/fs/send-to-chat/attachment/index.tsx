@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Types from '../../../constants/types/fs'
+import * as Constants from '../../../constants/fs'
 import * as Kb from '../../../common-adapters'
 import * as Kbfs from '../../common'
 import * as Styles from '../../../styles'
@@ -7,6 +8,7 @@ import * as FsGen from '../../../actions/fs-gen'
 import * as Chat2Gen from '../../../actions/chat2-gen'
 import * as ChatTypes from '../../../constants/types/chat2'
 import * as Container from '../../../util/container'
+import * as RPCTypes from '../../../constants/types/rpc-gen'
 import HiddenString from '../../../util/hidden-string'
 import ConversationList from './conversation-list/conversation-list-container'
 import ChooseConversation from './conversation-list/choose-conversation-container'
@@ -15,7 +17,7 @@ type Props = {
   onCancel: () => void
   onSetTitle: (title: string) => void
   send?: () => void
-  path: Types.Path
+  source: Types.Path | Array<RPCTypes.IncomingShareItem>
   sendAttachmentToChatState: Types.SendAttachmentToChatState
   title: string
 }
@@ -73,7 +75,7 @@ const MobileHeader = (props: Props) => (
     </Kb.Text>
     <Kb.Box2 direction="horizontal" style={mobileStyles.headerContent} fullWidth={true} centerChildren={true}>
       <Kb.Text type="BodySemibold" style={mobileStyles.filename}>
-        {Types.getPathName(props.path)}
+        {Constants.getShareSourceDescription(props.source)}
       </Kb.Text>
     </Kb.Box2>
     <Kb.Text type="BodyBigLink" style={mobileStyles.button} onClick={props.send}>
@@ -101,8 +103,10 @@ const DesktopSendAttachmentToChat = (props: Props) => (
           style={desktopStyles.pathItem}
           gap="tiny"
         >
-          <Kbfs.ItemIcon size={48} path={props.path} badgeOverride="iconfont-attachment" />
-          <Kb.Text type="BodySmall">{Types.getPathName(props.path)}</Kb.Text>
+          {typeof props.source === 'string' && (
+            <Kbfs.ItemIcon size={48} path={props.source} badgeOverride="iconfont-attachment" />
+          )}
+          <Kb.Text type="BodySmall">{Constants.getShareSourceDescription(props.source)}</Kb.Text>
         </Kb.Box2>
         <DesktopConversationDropdown dropdownButtonStyle={desktopStyles.dropdown} />
         <Kb.LabeledInput

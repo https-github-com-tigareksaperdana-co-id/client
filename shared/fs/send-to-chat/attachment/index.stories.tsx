@@ -35,7 +35,7 @@ const load = () =>
     .add('no conversation', () => (
       <SendAttachmentToChat
         {...common}
-        path={Types.stringToPath('/keybase/team/kbkbfstest/banana-bread-has-a-super-long-name.txt')}
+        source={Types.stringToPath('/keybase/team/kbkbfstest/banana-bread-has-a-super-long-name.txt')}
         title="banana-bread-has-a-super-long-name.txt"
       />
     ))

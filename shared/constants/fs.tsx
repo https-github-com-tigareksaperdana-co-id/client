@@ -208,7 +208,7 @@ export const emptyError = makeError()
 export const emptySendAttachmentToChat: Types.SendAttachmentToChat = {
   convID: ChatConstants.noConversationIDKey,
   filter: '',
-  path: Types.stringToPath('/keybase'),
+  source: Types.stringToPath('/keybase'),
   state: Types.SendAttachmentToChatState.None,
   title: '',
 }
@@ -765,7 +765,7 @@ export const getDestinationPickerPathName = (picker: Types.DestinationPicker): s
   picker.source.type === Types.DestinationPickerSource.MoveOrCopy
     ? Types.getPathName(picker.source.path)
     : picker.source.type === Types.DestinationPickerSource.IncomingShare
-    ? Types.getLocalPathName(picker.source.localPath)
+    ? getShareSourceDescription(picker.source.source)
     : ''
 
 const isPathEnabledForSync = (syncConfig: Types.TlfSyncConfig, path: Types.Path): boolean => {
@@ -908,10 +908,10 @@ export const makeActionForOpenPathInFilesTab = (
 export const putActionIfOnPathForNav1 = (action: TypedActions) => action
 
 export const makeActionsForShowSendAttachmentToChat = (path: Types.Path): Array<TypedActions> => [
-  FsGen.createInitSendAttachmentToChat({path}) as any,
+  FsGen.createInitSendAttachmentToChat({source: path}) as any,
   putActionIfOnPathForNav1(
     RouteTreeGen.createNavigateAppend({
-      path: [{props: {path}, selected: 'sendAttachmentToChat'}],
+      path: [{selected: 'sendAttachmentToChat'}],
     })
   ),
 ]
@@ -1006,6 +1006,19 @@ export const hasSpecialFileElement = (path: Types.Path): boolean =>
 
 export const sfmiInfoLoaded = (settings: Types.Settings, driverStatus: Types.DriverStatus): boolean =>
   settings.loaded && driverStatus !== driverStatusUnknown
+
+export const getShareSourceDescription = (
+  source: Types.Path | string | Array<RPCTypes.IncomingShareItem>
+): string => {
+  if (Array.isArray(source)) {
+    return !source.length
+      ? '<empty>'
+      : source.length === 1
+      ? source[0].filename || Types.getPathName(source[0].payloadPath)
+      : `${source.length} items`
+  }
+  return source as string
+}
 
 export const erroredActionToMessage = (action: FsGen.Actions | EngineGen.Actions, error: string): string => {
   // We have FsError.expectedIfOffline now to take care of real offline

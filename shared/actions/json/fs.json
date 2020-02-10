@@ -173,15 +173,15 @@
       "path": "Types.Path"
     },
     "showMoveOrCopy": {"initialDestinationParentPath": "Types.Path"},
-    "setIncomingShareLocalPath": {
-      "localPath": "Types.LocalPath"
+    "setIncomingShareSource": {
+      "source": "Types.LocalPath | Array<RPCTypes.IncomingShareItem>"
     },
     "showIncomingShare": {"initialDestinationParentPath": "Types.Path"},
     "move": {"destinationParentPath": "Types.Path"},
     "copy": {"destinationParentPath": "Types.Path"},
 
     "initSendAttachmentToChat": {
-      "path": "Types.Path"
+      "source": "Types.Path | Array<RPCTypes.IncomingShareItem>"
     },
     "setSendAttachmentToChatConvID": {
       "convID": "ChatTypes.ConversationIDKey"

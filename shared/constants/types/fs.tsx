@@ -412,7 +412,7 @@ export type MoveOrCopySource = {
 
 export type IncomingShareSource = {
   readonly type: DestinationPickerSource.IncomingShare
-  readonly localPath: LocalPath
+  readonly source: LocalPath | Array<RPCTypes.IncomingShareItem>
 }
 
 export type NoSource = {
@@ -439,7 +439,7 @@ export enum SendAttachmentToChatState {
 export type SendAttachmentToChat = {
   readonly convID: ChatTypes.ConversationIDKey
   readonly filter: string
-  readonly path: Path
+  readonly source: Path | Array<RPCTypes.IncomingShareItem>
   readonly state: SendAttachmentToChatState
   readonly title: string
 }
