@@ -4677,6 +4677,12 @@ func TestChatSrvChatMembershipsLocal(t *testing.T) {
 
 		conv := mustCreateConversationForTest(t, ctc, users[0], chat1.TopicType_CHAT,
 			mt, ctc.as(t, users[1]).user())
+
+		teamID, err := ctc.as(t, users[0]).chatLocalHandler().TeamIDFromTLFName(ctx, chat1.TeamIDFromTLFNameArg{
+			TlfName:     conv.TlfName,
+			MembersType: chat1.ConversationMembersType_TEAM,
+		})
+		require.NoError(t, err)
 		t.Logf("first conv: %s", conv.Id)
 		t.Logf("create a conversation, and join user 1 into by sending a message")
 		topicName := "zjoinonsend"
@@ -4697,14 +4703,15 @@ func TestChatSrvChatMembershipsLocal(t *testing.T) {
 
 		getChannelsRes, err := ctc.as(t, users[1]).chatLocalHandler().GetChannelMembershipsLocal(ctx1,
 			chat1.GetChannelMembershipsLocalArg{
-				TlfName:     conv.TlfName,
-				Uid:         users[1].GetUID(),
-				TopicType:   chat1.TopicType_CHAT,
-				MembersType: chat1.ConversationMembersType_TEAM,
+				TeamID: teamID,
+				Uid:    users[1].GetUID(),
 			})
 		require.NoError(t, err)
 		require.Equal(t, 2, len(getChannelsRes.Channels))
-		require.Equal(t, globals.DefaultTeamTopic, getChannelsRes.Channels[0].TopicName)
+		require.Contains(t, getChannelsRes.Channels, chat1.ChannelNameMention{
+			ConvID:    ncres.Conv.GetConvID(),
+			TopicName: topicName,
+		})
 
 		// users[1] leaves the new convo
 		_, err = ctc.as(t, users[1]).chatLocalHandler().LeaveConversationLocal(ctx1,
@@ -4717,10 +4724,8 @@ func TestChatSrvChatMembershipsLocal(t *testing.T) {
 		for i, user := range users {
 			getChannelsRes, err = ctc.as(t, user).chatLocalHandler().GetChannelMembershipsLocal(ctc.as(t, user).startCtx,
 				chat1.GetChannelMembershipsLocalArg{
-					Uid:         user.GetUID(),
-					TlfName:     conv.TlfName,
-					TopicType:   chat1.TopicType_CHAT,
-					MembersType: chat1.ConversationMembersType_TEAM,
+					TeamID: teamID,
+					Uid:    user.GetUID(),
 				})
 			require.NoError(t, err)
 			if i == 1 {
@@ -4746,10 +4751,8 @@ func TestChatSrvChatMembershipsLocal(t *testing.T) {
 		for _, user := range users {
 			getChannelsRes, err = ctc.as(t, user).chatLocalHandler().GetChannelMembershipsLocal(ctc.as(t, user).startCtx,
 				chat1.GetChannelMembershipsLocalArg{
-					TlfName:     conv.TlfName,
-					Uid:         user.GetUID(),
-					TopicType:   chat1.TopicType_CHAT,
-					MembersType: chat1.ConversationMembersType_TEAM,
+					TeamID: teamID,
+					Uid:    user.GetUID(),
 				})
 			require.NoError(t, err)
 			require.Equal(t, 1, len(getChannelsRes.Channels))
