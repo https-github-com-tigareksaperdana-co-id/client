@@ -962,7 +962,6 @@ export type TypedActionsMap = {
   'teams:toggleInvitesCollapsed': teams.ToggleInvitesCollapsedPayload
   'teams:loadWelcomeMessage': teams.LoadWelcomeMessagePayload
   'teams:loadedWelcomeMessage': teams.LoadedWelcomeMessagePayload
-  'teams:setWelcomeMessage': teams.SetWelcomeMessagePayload
   'teams:setSubteamFilter': teams.SetSubteamFilterPayload
   'teams:showTeamByName': teams.ShowTeamByNamePayload
   'tracker2:load': tracker2.LoadPayload
